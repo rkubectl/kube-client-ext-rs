@@ -1,5 +1,5 @@
-use client::core::Status;
 use client::Error;
+use client::core::Status;
 
 use super::*;
 
