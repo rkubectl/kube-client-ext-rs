@@ -72,6 +72,11 @@ let configmap = client.get_configmap("my-config", None).await?;
 let pods = client.list_pods("default").await?;
 let deployments = client.list_deployments(None).await?;
 let jobs = client.list_jobs("batch-namespace").await?;
+let secrets = client.list_secrets("default").await?;
+let services = client.list_services("kube-system").await?;
+let statefulsets = client.list_statefulsets("database-ns").await?;
+let configmaps = client.list_configmaps("default").await?;
+let serviceaccounts = client.list_serviceaccounts("default").await?;
 ```
 
 **Resource Relationships:**
@@ -122,6 +127,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let pods = client.list_pods(None).await?;
     println!("Found {} pods", pods.len());
 
+    // List secrets and services in a specific namespace
+    let secrets = client.list_secrets("default").await?;
+    let services = client.list_services("default").await?;
+    println!("Found {} secrets and {} services", secrets.len(), services.len());
+
     // Get a specific deployment
     if let Some(deployment) = client.get_deployment_opt("my-app", "default").await? {
         println!("Deployment found: {}", deployment.name_any());
@@ -160,7 +170,7 @@ async fn cleanup_deployment(
         .or_else(not_found_ok)?;
 
     // Clean up any secrets owned by this deployment
-    let secrets = client.list_k::<corev1::Secret>(namespace).await?;
+    let secrets = client.list_secrets(namespace).await?;
     for secret in secrets {
         if secret.owner_references()
             .iter()
@@ -168,6 +178,20 @@ async fn cleanup_deployment(
         {
             client.secrets(namespace)
                 .delete(&secret.name_any(), &client.delete_params())
+                .await
+                .or_else(not_found_ok)?;
+        }
+    }
+
+    // Also clean up any associated services
+    let services = client.list_services(namespace).await?;
+    for service in services {
+        if service.owner_references()
+            .iter()
+            .any(|owner| owner.name == name && owner.kind == "Deployment")
+        {
+            client.services(namespace)
+                .delete(&service.name_any(), &client.delete_params())
                 .await
                 .or_else(not_found_ok)?;
         }
@@ -187,7 +211,6 @@ This crate supports the same Kubernetes versions as the underlying `kube` and `k
 ## Features
 
 - **`default`**: Enables `k8s-openapi/latest` feature for the most recent Kubernetes APIs
-- **`pedantic`**: Enables additional clippy lints for stricter code quality
 
 ## Why Use This Crate?
 

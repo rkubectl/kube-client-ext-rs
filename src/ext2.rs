@@ -179,6 +179,51 @@ pub trait KubeClientExt2: KubeClientExt {
         self.list_k(namespace).await
     }
 
+    /// List all `Secret`s in a given (or default) namespace
+    ///
+    async fn list_secrets(
+        &self,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Vec<corev1::Secret>> {
+        self.list_k(namespace).await
+    }
+
+    /// List all `Service`s in a given (or default) namespace
+    ///
+    async fn list_services(
+        &self,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Vec<corev1::Service>> {
+        self.list_k(namespace).await
+    }
+
+    /// List all `StatefulSet`s in a given (or default) namespace
+    ///
+    async fn list_statefulsets(
+        &self,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Vec<appsv1::StatefulSet>> {
+        self.list_k(namespace).await
+    }
+
+    /// List all `ConfigMap`s in a given (or default) namespace
+    ///
+    async fn list_configmaps(
+        &self,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Vec<corev1::ConfigMap>> {
+        self.list_k(namespace).await
+    }
+
+    /// List all `ServiceAccount`s in a given (or default) namespace
+    ///
+    async fn list_serviceaccounts(
+        &self,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Vec<corev1::ServiceAccount>> {
+        self.list_k(namespace).await
+    }
+
     /// List namespaced objects of kind `K` in a given (or default) namespace
     ///
     async fn list_k<K>(&self, namespace: impl Into<Option<&str>> + Send) -> client::Result<Vec<K>>
