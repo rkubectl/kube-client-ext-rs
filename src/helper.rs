@@ -21,12 +21,14 @@ use super::*;
 ///         .is_ok()
 /// }
 /// ```
-pub fn ignore_not_found<K>(err: Error) -> client::Result<either::Either<K, Status>> {
+pub fn not_found_ok<K>(err: Error) -> client::Result<either::Either<K, Status>> {
     match err {
-        Error::Api(err) if err.code == 404 => {
-            let status = Status::failure(&err.message, &err.reason).with_code(err.code);
-            Ok(either::Right(status))
-        }
+        Error::Api(status) if status.is_not_found() => Ok(either::Right(*status)),
         other => Err(other),
     }
+}
+
+#[deprecated(since = "3.0.1", note = "use `not_found_ok` instead")]
+pub fn ignore_not_found<K>(err: Error) -> client::Result<either::Either<K, Status>> {
+    not_found_ok(err)
 }

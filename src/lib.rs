@@ -31,7 +31,9 @@ use client::api;
 
 pub use ext::KubeClientExt;
 pub use ext2::KubeClientExt2;
+#[expect(deprecated)]
 pub use helper::ignore_not_found;
+pub use helper::not_found_ok;
 
 mod ext;
 mod ext2;
