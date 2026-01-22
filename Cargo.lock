@@ -451,7 +451,7 @@ dependencies = [
 
 [[package]]
 name = "kube-client-ext"
-version = "3.0.1"
+version = "3.0.2"
 dependencies = [
  "async-trait",
  "either",
