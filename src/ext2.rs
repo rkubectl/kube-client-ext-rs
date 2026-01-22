@@ -317,7 +317,7 @@ pub trait KubeClientExt2: KubeClientExt {
     }
 
     /// Get all the pods controlled by a given statefulset
-    async fn get_pod_by_statefulset(
+    async fn get_pods_by_statefulset(
         &self,
         statefulset: &appsv1::StatefulSet,
     ) -> client::Result<Option<Vec<corev1::Pod>>> {
@@ -344,7 +344,7 @@ pub trait KubeClientExt2: KubeClientExt {
         let Some(statefulset) = self.get_statefulset_opt(name, namespace).await? else {
             return Ok(None);
         };
-        self.get_pod_by_statefulset(&statefulset).await
+        self.get_pods_by_statefulset(&statefulset).await
     }
 }
 
