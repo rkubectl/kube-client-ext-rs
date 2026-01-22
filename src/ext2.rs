@@ -1,9 +1,11 @@
 use std::collections::BTreeMap;
 use std::fmt;
 
-use client::ResourceExt;
-use k8s::OwnerReferenceExt;
-use k8s::StatefulSetGetExt;
+use client::ResourceExt as _;
+use k8s::DeploymentGetExt as _;
+use k8s::OwnerReferenceExt as _;
+use k8s::ReplicaSetGetExt as _;
+use k8s::StatefulSetGetExt as _;
 
 use super::*;
 
@@ -321,7 +323,11 @@ pub trait KubeClientExt2: KubeClientExt {
     ) -> client::Result<Option<Vec<corev1::Pod>>> {
         let namespace = statefulset.namespace();
         let pods = if let Some(revision) = statefulset.current_revision() {
-            let controller_revision = format!("controller-revision-hash={revision}");
+            let controller_revision = format!(
+                "{}={}",
+                k8s::label::CONTROLLER_REVISION_HASH_LABEL_KEY,
+                revision
+            );
             let lp = self.list_params().labels(&controller_revision);
             self.pods(namespace.as_deref()).list(&lp).await?.items
         } else {
@@ -345,8 +351,8 @@ pub trait KubeClientExt2: KubeClientExt {
 impl KubeClientExt2 for client::Client {}
 
 fn match_template_spec_no_hash(rs: &appsv1::ReplicaSet, deployment: &appsv1::Deployment) -> bool {
-    let rs_template = rs_pod_template(rs).map(remove_hash);
-    let deployment_template = deployment_pod_template(deployment).map(remove_hash);
+    let rs_template = rs.template().map(remove_hash);
+    let deployment_template = deployment.template().map(remove_hash);
     rs_template == deployment_template
 }
 
@@ -360,12 +366,4 @@ fn remove_hash(template: &corev1::PodTemplateSpec) -> corev1::PodTemplateSpec {
 
 fn labels_mut(template: &mut corev1::PodTemplateSpec) -> Option<&mut BTreeMap<String, String>> {
     template.metadata.as_mut()?.labels.as_mut()
-}
-
-fn rs_pod_template(rs: &appsv1::ReplicaSet) -> Option<&corev1::PodTemplateSpec> {
-    rs.spec.as_ref()?.template.as_ref()
-}
-
-fn deployment_pod_template(deployment: &appsv1::Deployment) -> Option<&corev1::PodTemplateSpec> {
-    deployment.spec.as_ref().map(|spec| &spec.template)
 }
