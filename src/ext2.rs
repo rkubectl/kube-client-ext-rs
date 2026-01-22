@@ -3,6 +3,7 @@ use std::fmt;
 
 use client::ResourceExt;
 use k8s::OwnerReferenceExt;
+use k8s::StatefulSetGetExt;
 
 use super::*;
 
@@ -71,6 +72,27 @@ pub trait KubeClientExt2: KubeClientExt {
         namespace: impl Into<Option<&str>> + Send,
     ) -> client::Result<appsv1::Deployment> {
         self.deployments(namespace).get(name).await
+    }
+
+    /// Get named statefulset from a given (or default) namespace
+    /// Return `None` if not found
+    ///
+    async fn get_statefulset_opt(
+        &self,
+        name: &str,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Option<appsv1::StatefulSet>> {
+        self.statefulsets(namespace).get_opt(name).await
+    }
+
+    /// Get named statefulset from a given (or default) namespace
+    ///
+    async fn get_statefulset(
+        &self,
+        name: &str,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<appsv1::StatefulSet> {
+        self.statefulsets(namespace).get(name).await
     }
 
     /// Get named api service
@@ -253,7 +275,6 @@ pub trait KubeClientExt2: KubeClientExt {
         let Some(deployment) = self.get_deployment_opt(name, namespace).await? else {
             return Ok(None);
         };
-
         self.get_pods_by_deployment(&deployment).await
     }
 
@@ -291,6 +312,33 @@ pub trait KubeClientExt2: KubeClientExt {
             .collect();
 
         Ok(Some(pods))
+    }
+
+    /// Get all the pods controlled by a given statefulset
+    async fn get_pod_by_statefulset(
+        &self,
+        statefulset: &appsv1::StatefulSet,
+    ) -> client::Result<Option<Vec<corev1::Pod>>> {
+        let namespace = statefulset.namespace();
+        let pods = if let Some(revision) = statefulset.current_revision() {
+            let controller_revision = format!("controller-revision-hash={revision}");
+            let lp = self.list_params().labels(&controller_revision);
+            self.pods(namespace.as_deref()).list(&lp).await?.items
+        } else {
+            vec![]
+        };
+        Ok(Some(pods))
+    }
+
+    async fn get_pods_by_statefulset_name(
+        &self,
+        name: &str,
+        namespace: impl Into<Option<&str>> + Send,
+    ) -> client::Result<Option<Vec<corev1::Pod>>> {
+        let Some(statefulset) = self.get_statefulset_opt(name, namespace).await? else {
+            return Ok(None);
+        };
+        self.get_pod_by_statefulset(&statefulset).await
     }
 }
 
