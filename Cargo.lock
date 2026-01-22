@@ -407,9 +407,9 @@ dependencies = [
 
 [[package]]
 name = "k8s-openapi-ext"
-version = "0.27.1"
+version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5748195a455dc40be55195343c95fd8f4f9e092505bf3c38330cccb3bc698a60"
+checksum = "6a3b5ccbc66a8a6ca13e105244274d4e6db2660f1b89b08f19363d6e1ba9bc4f"
 dependencies = [
  "base64",
  "jiff",
