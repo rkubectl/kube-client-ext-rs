@@ -35,7 +35,8 @@ use kube_client as client;
 
 use client::api;
 
-pub use ext::KubeClientExt;
+pub use ext::KubeClientApiExt;
+pub use ext::KubeClientApiParamsExt;
 pub use ext2::KubeClientExt2;
 #[expect(deprecated)]
 pub use helper::ignore_not_found;
@@ -44,3 +45,12 @@ pub use helper::not_found_ok;
 mod ext;
 mod ext2;
 mod helper;
+
+/// This trait is soft-deprecated. Its funcionality has been split between
+/// `KubeClientApiExt` and `KubeClientApiParamsExt` traits.
+///  Please use one of them according to your needs instead.
+///
+/// This trait will be hard-deprecated in a future release.
+pub trait KubeClientExt: KubeClientApiExt + KubeClientApiParamsExt {}
+
+impl KubeClientExt for client::Client {}

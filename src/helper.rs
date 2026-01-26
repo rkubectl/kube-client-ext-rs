@@ -8,8 +8,9 @@ use super::*;
 ///
 /// Example:
 /// ```no_run
-/// # use kube_client_ext::ignore_not_found;
-/// # use kube_client_ext::KubeClientExt;
+/// # use kube_client_ext::not_found_ok;
+/// # use kube_client_ext::KubeClientApiExt;
+/// # use kube_client_ext::KubeClientApiParamsExt;
 /// # use kube_client::Client;
 ///
 /// async fn delete_and_ignore_not_found(client: &Client) -> bool {
@@ -17,7 +18,7 @@ use super::*;
 ///         .namespaces()
 ///         .delete("nonexistent", &client.delete_params())
 ///         .await
-///         .or_else(ignore_not_found)
+///         .or_else(not_found_ok)
 ///         .is_ok()
 /// }
 /// ```

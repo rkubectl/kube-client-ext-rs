@@ -12,7 +12,7 @@ use super::*;
 /// Async extentions to `kube::Client`
 ///
 #[async_trait::async_trait]
-pub trait KubeClientExt2: KubeClientExt {
+pub trait KubeClientExt2: KubeClientApiExt + KubeClientApiParamsExt {
     /// Get named configmap from a given (or default) namespace
     /// Return `None` if not found`
     ///
