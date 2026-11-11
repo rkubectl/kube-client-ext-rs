@@ -3,8 +3,8 @@ use client::core::Status;
 
 use super::*;
 
-/// This helper is useful when you call .delete() and want to ignore "not found" errors
-/// the NOT_FOUND status will be converted into an Ok variant with a Status object
+/// This helper is useful when you call .`delete()` and want to ignore "not found" errors
+/// the `NOT_FOUND` status will be converted into an Ok variant with a Status object
 ///
 /// Example:
 /// ```no_run

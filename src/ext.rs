@@ -8,7 +8,7 @@ use super::*;
 /// manually call `Api::all()`, `Api::namespaced()`, or `Api::default_namespaced()` for common
 /// resources, making the code more readable and less verbose.
 ///
-/// The trait includes methods for both cluster-scoped resources (like Nodes, ClusterRoles) and
+/// The trait includes methods for both cluster-scoped resources (like `Nodes`, `ClusterRoles`) and
 /// namespace-scoped resources (like Pods, Services, Deployments). For namespace-scoped resources,
 /// methods accept an optional namespace parameter - if `None` is provided, the default namespace
 /// from the client configuration is used.
@@ -30,31 +30,31 @@ use super::*;
 /// # }
 /// ```
 pub trait KubeClientApiExt: Clone {
-    /// Returns an API client for managing APIServices in the cluster.
+    /// Returns an API client for managing `APIServices` in the cluster.
     ///
-    /// APIServices are cluster-scoped resources that define additional APIs
+    /// `APIServices` are cluster-scoped resources that define additional APIs
     /// available on the API server.
     fn apiservices(&self) -> api::Api<apiregistrationv1::APIService> {
         self.api()
     }
 
-    /// Returns an API client for managing ClusterRoles in the cluster.
+    /// Returns an API client for managing `ClusterRoles` in the cluster.
     ///
-    /// ClusterRoles are cluster-scoped RBAC resources that define a set of
+    /// `ClusterRoles` are cluster-scoped RBAC resources that define a set of
     /// permissions that can be bound to subjects cluster-wide.
     fn clusterroles(&self) -> api::Api<rbacv1::ClusterRole> {
         self.api()
     }
 
-    /// Returns an API client for managing ClusterRoleBindings in the cluster.
+    /// Returns an API client for managing `ClusterRoleBindings` in the cluster.
     ///
-    /// ClusterRoleBindings bind ClusterRoles to subjects (users, groups, or
+    /// `ClusterRoleBindings` bind `ClusterRoles` to subjects (users, groups, or
     /// service accounts) across the entire cluster.
     fn clusterrolebindings(&self) -> api::Api<rbacv1::ClusterRoleBinding> {
         self.api()
     }
 
-    /// Returns an API client for managing CustomResourceDefinitions (CRDs).
+    /// Returns an API client for managing `CustomResourceDefinitions` (CRDs).
     ///
     /// CRDs allow you to extend the Kubernetes API with custom resources
     /// specific to your applications.
@@ -86,33 +86,33 @@ pub trait KubeClientApiExt: Clone {
         self.api()
     }
 
-    /// Returns an API client for managing PersistentVolumes in the cluster.
+    /// Returns an API client for managing `PersistentVolumes` in the cluster.
     ///
-    /// PersistentVolumes are cluster-scoped storage resources that exist
+    /// `PersistentVolumes` are cluster-scoped storage resources that exist
     /// independently of any individual pod.
     fn persistentvolumes(&self) -> api::Api<corev1::PersistentVolume> {
         self.api()
     }
 
-    /// Returns an API client for managing StorageClasses in the cluster.
+    /// Returns an API client for managing `StorageClasses` in the cluster.
     ///
-    /// StorageClasses describe different classes of storage available
-    /// and how to provision PersistentVolumes.
+    /// `StorageClasses` describe different classes of storage available
+    /// and how to provision `PersistentVolumes`.
     fn storageclasses(&self) -> api::Api<storagev1::StorageClass> {
         self.api()
     }
 
-    /// Returns an API client for managing ConfigMaps in the specified namespace.
+    /// Returns an API client for managing `ConfigMaps` in the specified namespace.
     ///
-    /// ConfigMaps store non-confidential configuration data in key-value pairs.
+    /// `ConfigMaps` store non-confidential configuration data in key-value pairs.
     /// If no namespace is provided, uses the default namespace.
     fn configmaps<'a>(&self, namespace: impl Into<Option<&'a str>>) -> api::Api<corev1::ConfigMap> {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing DaemonSets in the specified namespace.
+    /// Returns an API client for managing `DaemonSets` in the specified namespace.
     ///
-    /// DaemonSets ensure that all (or some) nodes run a copy of a specific pod.
+    /// `DaemonSets` ensure that all (or some) nodes run a copy of a specific pod.
     /// If no namespace is provided, uses the default namespace.
     fn daemonsets<'a>(&self, namespace: impl Into<Option<&'a str>>) -> api::Api<appsv1::DaemonSet> {
         self.namespaced_k(namespace)
@@ -120,7 +120,7 @@ pub trait KubeClientApiExt: Clone {
 
     /// Returns an API client for managing Deployments in the specified namespace.
     ///
-    /// Deployments provide declarative updates for pods and ReplicaSets.
+    /// Deployments provide declarative updates for pods and `ReplicaSets`.
     /// If no namespace is provided, uses the default namespace.
     fn deployments<'a>(
         &self,
@@ -129,9 +129,9 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing HorizontalPodAutoscalers in the specified namespace.
+    /// Returns an API client for managing `HorizontalPodAutoscalers` in the specified namespace.
     ///
-    /// HorizontalPodAutoscalers automatically scale the number of pods in a deployment,
+    /// `HorizontalPodAutoscalers` automatically scale the number of pods in a deployment,
     /// replica set, or stateful set based on observed metrics.
     /// If no namespace is provided, uses the default namespace.
     fn horizontalpodautoscalers<'a>(
@@ -149,18 +149,18 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing CronJobs in the specified namespace.
+    /// Returns an API client for managing `CronJobs` in the specified namespace.
     ///
-    /// CronJobs create Jobs on a repeating schedule based on a cron expression.
+    /// `CronJobs` create Jobs on a repeating schedule based on a cron expression.
     /// If no namespace is provided, uses the default namespace.
     fn cronjobs<'a>(&self, namespace: impl Into<Option<&'a str>>) -> api::Api<batchv1::CronJob> {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing PersistentVolumeClaims in the specified namespace.
+    /// Returns an API client for managing `PersistentVolumeClaims` in the specified namespace.
     ///
-    /// PersistentVolumeClaims are requests for storage by users that can be
-    /// bound to PersistentVolumes. If no namespace is provided, uses the default namespace.
+    /// `PersistentVolumeClaims` are requests for storage by users that can be
+    /// bound to `PersistentVolumes`. If no namespace is provided, uses the default namespace.
     fn persistentvolumeclaims<'a>(
         &self,
         namespace: impl Into<Option<&'a str>>,
@@ -168,9 +168,9 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing ReplicaSets in the specified namespace.
+    /// Returns an API client for managing `ReplicaSets` in the specified namespace.
     ///
-    /// ReplicaSets ensure that a specified number of pod replicas are running
+    /// `ReplicaSets` ensure that a specified number of pod replicas are running
     /// at any given time. If no namespace is provided, uses the default namespace.
     fn replicasets<'a>(
         &self,
@@ -187,9 +187,9 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing RoleBindings in the specified namespace.
+    /// Returns an API client for managing `RoleBindings` in the specified namespace.
     ///
-    /// RoleBindings bind Roles or ClusterRoles to subjects within a specific namespace.
+    /// `RoleBindings` bind Roles or `ClusterRoles` to subjects within a specific namespace.
     /// If no namespace is provided, uses the default namespace.
     fn rolebindings<'a>(
         &self,
@@ -213,9 +213,9 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing ServiceAccounts in the specified namespace.
+    /// Returns an API client for managing `ServiceAccounts` in the specified namespace.
     ///
-    /// ServiceAccounts provide an identity for processes that run in pods
+    /// `ServiceAccounts` provide an identity for processes that run in pods
     /// and are used for authentication to the Kubernetes API.
     /// If no namespace is provided, uses the default namespace.
     fn serviceaccounts<'a>(
@@ -234,9 +234,9 @@ pub trait KubeClientApiExt: Clone {
         self.namespaced_k(namespace)
     }
 
-    /// Returns an API client for managing StatefulSets in the specified namespace.
+    /// Returns an API client for managing `StatefulSets` in the specified namespace.
     ///
-    /// StatefulSets manage the deployment and scaling of pods with persistent
+    /// `StatefulSets` manage the deployment and scaling of pods with persistent
     /// identities and stable network identities.
     /// If no namespace is provided, uses the default namespace.
     fn statefulsets<'a>(

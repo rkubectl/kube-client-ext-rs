@@ -14,8 +14,7 @@ use super::*;
 #[async_trait::async_trait]
 pub trait KubeClientExt2: KubeClientApiExt + KubeClientApiParamsExt {
     /// Get named configmap from a given (or default) namespace
-    /// Return `None` if not found`
-    ///
+    /// Return `None` if not found
     async fn get_configmap_opt(
         &self,
         name: &str,
@@ -35,8 +34,7 @@ pub trait KubeClientExt2: KubeClientApiExt + KubeClientApiParamsExt {
     }
 
     /// Get named secret from a given (or default) namespace
-    /// Return `None` if not found`
-    ///
+    /// Return `None` if not found
     async fn get_secret_opt(
         &self,
         name: &str,
