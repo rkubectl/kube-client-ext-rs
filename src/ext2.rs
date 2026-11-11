@@ -349,9 +349,11 @@ pub trait KubeClientExt2: KubeClientApiExt + KubeClientApiParamsExt {
 impl KubeClientExt2 for client::Client {}
 
 fn match_template_spec_no_hash(rs: &appsv1::ReplicaSet, deployment: &appsv1::Deployment) -> bool {
-    let rs_template = rs.template().map(remove_hash);
-    let deployment_template = deployment.template().map(remove_hash);
-    rs_template == deployment_template
+    let Some(rs_template) = rs.template() else {
+        return false;
+    };
+    let deployment_template = deployment.template();
+    remove_hash(rs_template) == remove_hash(deployment_template)
 }
 
 fn remove_hash(template: &corev1::PodTemplateSpec) -> corev1::PodTemplateSpec {
