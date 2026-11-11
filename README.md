@@ -205,8 +205,8 @@ async fn cleanup_deployment(
 
 This crate supports the same Kubernetes versions as the underlying `kube` and `k8s-openapi` crates:
 
-- Kubernetes 1.24+
-- Latest tested: Kubernetes 1.31
+- Kubernetes 1.31+
+- Latest tested: Kubernetes 1.35
 
 ## Features
 
